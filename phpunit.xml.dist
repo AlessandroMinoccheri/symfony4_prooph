@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.8/phpunit.xsd"
+         backupGlobals="false"
+         colors="true"
+         bootstrap="tests/autoload.php"
+>
+
+    <!--php configuration overwrite-->
+    <php>
+        <ini name="error_reporting" value="E_ALL" />
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak" />
+        <env name="KERNEL_CLASS" value="App\Kernel" />
+
+        <!-- ###+ doctrine/doctrine-bundle ### -->
+        <!-- Format described at http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/configuration.html#connecting-using-a-url -->
+        <!-- For an SQLite database, use: "sqlite:///%kernel.project_dir%/var/data.db" -->
+        <!-- Configure your db driver and server_version in config/packages/doctrine.yaml -->
+        <env name="APP_ENV" value="test" />
+        <!-- ###- doctrine/doctrine-bundle ### -->
+    </php>
+
+    <!--folter with tests-->
+    <testsuites>
+        <testsuite name="Project Test Suite">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <!--filter for coverage-->
+    <filter>
+        <whitelist>
+            <directory>src</directory>
+            <exclude>
+            </exclude>
+        </whitelist>
+    </filter>
+
+</phpunit>

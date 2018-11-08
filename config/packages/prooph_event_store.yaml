@@ -1,0 +1,47 @@
+prooph_event_store:
+    stores:
+        todo_store:
+            event_store: Prooph\EventStore\Pdo\MySqlEventStore
+            repositories:
+                todo_list:
+                    repository_class: App\Prooph\Infrastructure\Repository\EventStoreTodoList
+                    aggregate_type: App\Prooph\Model\Todo\Todo
+                    aggregate_translator: prooph_event_sourcing.aggregate_translator
+
+                user_collection:
+                    repository_class: App\Prooph\Infrastructure\Repository\EventStoreUserCollection
+                    aggregate_type: App\Prooph\Model\User\User
+                    aggregate_translator: prooph_event_sourcing.aggregate_translator
+        post_store:
+            event_store: Prooph\EventStore\Pdo\MySqlEventStore
+            repositories:
+                post_list:
+                    repository_class: App\Prooph\Infrastructure\Repository\EventStorePostList
+                    aggregate_type: App\Prooph\Model\Post\Post
+                    aggregate_translator: prooph_event_sourcing.aggregate_translator
+    projection_managers:
+        todo_projection_manager:
+            event_store: Prooph\EventStore\Pdo\MySqlEventStore # event store
+            connection: 'doctrine.pdo.connection'
+            projections:
+                todo_projection:
+                    read_model: App\Prooph\Projection\Todo\TodoReadModel
+                    projection: App\Prooph\Projection\Todo\TodoProjection
+                todo_reminder_projection:
+                    read_model: App\Prooph\Projection\Todo\TodoReminderReadModel
+                    projection: App\Prooph\Projection\Todo\TodoReminderProjection
+
+
+services:
+    Prooph\EventStore\Pdo\MySqlEventStore:
+        arguments: ['@prooph_event_store.message_factory', '@doctrine.pdo.connection', '@prooph_event_store.single_stream_strategy']
+
+    doctrine.pdo.connection:
+        class: PDO
+        factory: ['@database_connection', getWrappedConnection]
+
+    prooph_event_store.single_stream_strategy:
+        class: Prooph\EventStore\Pdo\PersistenceStrategy\MySqlSingleStreamStrategy
+
+    prooph_event_sourcing.aggregate_translator:
+        class: Prooph\EventSourcing\EventStoreIntegration\AggregateTranslator
