@@ -30,6 +30,13 @@ prooph_event_store:
                 todo_reminder_projection:
                     read_model: App\Prooph\Projection\Todo\TodoReminderReadModel
                     projection: App\Prooph\Projection\Todo\TodoReminderProjection
+        post_projection_manager:
+             event_store: Prooph\EventStore\Pdo\MySqlEventStore # event store
+             connection: 'doctrine.pdo.connection'
+             projections:
+                 post_projection:
+                     read_model: App\Prooph\Projection\Post\PostReadModel
+                     projection: App\Prooph\Projection\Post\PostProjection
 
 
 services:

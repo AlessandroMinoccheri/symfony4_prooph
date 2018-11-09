@@ -9,3 +9,7 @@ command::post-todo:
 command::post-post:
     path: /posts
     defaults: { _controller: App\Controller\PostController:postCreatePostAction, prooph_command_name: 'App\Prooph\Model\Post\Command\PostPost' }
+
+page::user-todo-list:
+    path:     /posts/{postId}
+    defaults: { _controller: App\Controller\PostController:listAction }

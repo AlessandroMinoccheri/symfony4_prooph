@@ -106,7 +106,7 @@ services:
         arguments: ['@doctrine.dbal.default_connection']
 
     App\Controller\PostController:
-        arguments: ['@prooph_service_bus.todo_command_bus', '@prooph_service_bus.message_factory']
+        arguments: ['@prooph_service_bus.todo_command_bus', '@prooph_service_bus.message_factory', '@logger', '@proophdo.post_projection.post_finder']
         tags: ['controller.service_arguments']
 
     App\Prooph\Model\Post\Handler\PostPostHandler:
@@ -114,3 +114,12 @@ services:
         public: true
         tags:
             - { name: 'prooph_service_bus.todo_command_bus.route_target', message_detection: true }
+
+    proophdo.post_projection.post_finder:
+        class: App\Prooph\Projection\Post\PostFinder
+        arguments: ['@doctrine.dbal.default_connection']
+
+    App\Prooph\Projection\Post\PostProjection: ~
+    App\Prooph\Projection\Post\PostReadModel:
+        arguments: ['@doctrine.dbal.default_connection']
+

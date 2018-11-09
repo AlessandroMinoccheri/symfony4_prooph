@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Prooph\Projection\Post\PostFinder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -31,12 +33,21 @@ class PostController extends FOSRestController
     private $logger;
 
     const NAME_ATTRIBUTE = 'prooph_command_name';
+    /**
+     * @var PostFinder
+     */
+    private $postFinder;
 
-    public function __construct(CommandBus $commandBus, MessageFactory $messageFactory, LoggerInterface $logger)
-    {
+    public function __construct(
+        CommandBus $commandBus,
+        MessageFactory $messageFactory,
+        LoggerInterface $logger,
+        PostFinder $postFinder
+    ) {
         $this->commandBus = $commandBus;
         $this->messageFactory = $messageFactory;
         $this->logger = $logger;
+        $this->postFinder = $postFinder;
     }
 
     public function postCreatePostAction(Request $request)
@@ -57,6 +68,9 @@ class PostController extends FOSRestController
 
         $payload = $request->request->all();
 
+        $postId = Uuid::uuid4()->toString();
+        $payload['post_id'] = $postId;
+
         $command = $this->messageFactory->createMessageFromArray($commandName, ['payload' => $payload]);
 
         try {
@@ -72,6 +86,15 @@ class PostController extends FOSRestController
             return JsonResponse::create(['message' => $error->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return JsonResponse::create(null, Response::HTTP_CREATED);
+        return JsonResponse::create(["post" => $postId], Response::HTTP_CREATED);
+    }
+
+    public function listAction(Request $request): Response
+    {
+        $postId = $request->get('postId');
+        $post = $this->postFinder->findById($postId);
+
+        var_dump($post);
+        die();
     }
 }
