@@ -32,17 +32,25 @@ final class PostWasPosted extends AggregateChanged
 
     private $description;
 
-    public static function create(PostText $text, PostDescription $description, PostId $postId): PostWasPosted
-    {
+    private $writerId;
+
+    public static function create(
+        PostText $text,
+        PostDescription $description,
+        PostId $postId,
+        UserId $writerId
+    ): PostWasPosted {
         /** @var self $event */
         $event = self::occur($postId->toString(), [
             'text' => $text->toString(),
             'description' => $description->toString(),
+            'writer_id' => $writerId->toString()
         ]);
 
         $event->postId = $postId;
         $event->text = $text;
         $event->description = $description;
+        $event->writerId = $writerId;
 
         return $event;
     }
@@ -64,5 +72,14 @@ final class PostWasPosted extends AggregateChanged
     public function description(): PostDescription
     {
         return PostDescription::fromString($this->payload['description']);
+    }
+
+    public function writerId(): UserId
+    {
+        if (null === $this->writerId) {
+            $this->writerId = UserId::fromString($this->payload['writer_id']);
+        }
+
+        return $this->writerId;
     }
 }

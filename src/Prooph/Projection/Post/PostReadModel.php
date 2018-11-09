@@ -35,9 +35,11 @@ final class PostReadModel extends AbstractReadModel
         $sql = <<<EOT
 CREATE TABLE `$tableName` (
   `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `writer_id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
   `text` longtext COLLATE utf8_unicode_ci NOT NULL,
   `description` longtext COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `idx_a_status` (`writer_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 EOT;
 

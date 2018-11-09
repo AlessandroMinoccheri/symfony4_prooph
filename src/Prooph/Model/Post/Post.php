@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace App\Prooph\Model\Post;
 
 use App\Prooph\Model\Post\Event\PostWasPosted;
+use App\Prooph\Model\User\UserId;
 use Prooph\EventSourcing\AggregateChanged;
 use Prooph\EventSourcing\AggregateRoot;
 use App\Prooph\Model\Entity;
@@ -34,10 +35,15 @@ final class Post extends AggregateRoot implements Entity
      */
     private $description;
 
-    public static function post(PostText $text, PostDescription $description, PostId $postId): Post
+    /**
+     * @var UserId
+     */
+    private $writerId;
+
+    public static function post(PostText $text, PostDescription $description, PostId $postId, UserId $writerId): Post
     {
         $self = new self();
-        $self->recordThat(PostWasPosted::create($text, $description, $postId));
+        $self->recordThat(PostWasPosted::create($text, $description, $postId, $writerId));
 
         return $self;
     }
@@ -57,11 +63,17 @@ final class Post extends AggregateRoot implements Entity
         return $this->description;
     }
 
+    public function writerId(): UserId
+    {
+        return $this->writerId;
+    }
+
     protected function whenPostWasPosted(PostWasPosted $event): void
     {
         $this->postId = $event->postId();
         $this->text = $event->text();
         $this->description = $event->description();
+        $this->writerId = $event->writerId();
     }
 
     protected function aggregateId(): string

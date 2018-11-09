@@ -31,7 +31,7 @@ class PostPostHandler
 
     public function __invoke(PostPost $command): void
     {
-        $post = Post::post($command->text(), $command->description(), $command->postId());
+        $post = Post::post($command->text(), $command->description(), $command->postId(), $command->writerId());
 
         $this->postList->save($post);
     }

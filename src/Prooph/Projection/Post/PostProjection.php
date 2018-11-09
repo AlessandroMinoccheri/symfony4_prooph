@@ -28,6 +28,7 @@ final class PostProjection implements ReadModelProjection
                     $readModel = $this->readModel();
                     $readModel->stack('insert', [
                         'id' => $event->postId()->toString(),
+                        'writer_id' => $event->writerId()->toString(),
                         'text' => $event->text()->toString(),
                         'description' => $event->description()->toString(),
                     ]);

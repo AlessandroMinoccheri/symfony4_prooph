@@ -78,7 +78,6 @@ If you want to test a projection you can:
 * make a GET request to /posts/{postId}
 
 For every projection you need to run its projection command.  
-For this reason isn't possible at the moment to test this api because you need to launch projections also
 
 
  

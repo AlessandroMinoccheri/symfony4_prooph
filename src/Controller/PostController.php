@@ -94,7 +94,10 @@ class PostController extends FOSRestController
         $postId = $request->get('postId');
         $post = $this->postFinder->findById($postId);
 
-        var_dump($post);
-        die();
+        if (null === $post) {
+            return JsonResponse::create(null, Response::HTTP_NOT_FOUND);
+        }
+
+        return JsonResponse::create(["post" => $post], Response::HTTP_OK);
     }
 }

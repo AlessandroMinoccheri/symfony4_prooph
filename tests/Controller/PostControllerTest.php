@@ -10,6 +10,7 @@ class PostControllerTest extends ApiTestCase
     {
         $this->client->request('POST', '/posts',
             [
+                'writer_id' => Uuid::uuid4()->toString(),
                 'text' => 'text' . random_int(1, 99999),
                 'description' => 'description' . random_int(1, 99999),
             ]
@@ -18,10 +19,11 @@ class PostControllerTest extends ApiTestCase
         $this->assertEquals(201, $this->client->getResponse()->getStatusCode());
     }
 
-    /*public function testGetPostList()
+    public function testGetPostList()
     {
         $this->client->request('POST', '/posts',
             [
+                'writer_id' => Uuid::uuid4()->toString(),
                 'text' => 'text' . random_int(1, 99999),
                 'description' => 'description' . random_int(1, 99999),
             ]
@@ -35,8 +37,6 @@ class PostControllerTest extends ApiTestCase
 
         $content = json_decode($this->client->getResponse()->getContent(), true);
 
-        var_dump($content);
-
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-    }*/
+    }
 }
