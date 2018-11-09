@@ -67,3 +67,18 @@ App\Prooph\Model\Post\Handler\PostPostHandler:
         - { name: 'prooph_service_bus.todo_command_bus.route_target', message_detection: true }
 ```
 
+## Projections
+
+If you want to test a projection you can:
+
+* run into you cli ```bin/console event-store:projection:run post_projection```
+* open Postman
+* make a POST request to /posts with text and description
+* take the post Id that returns
+* make a GET request to /posts/{postId}
+
+For every projection you need to run its projection command.  
+For this reason isn't possible at the moment to test this api because you need to launch projections also
+
+
+ 
