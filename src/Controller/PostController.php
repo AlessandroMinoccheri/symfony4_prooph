@@ -100,4 +100,12 @@ class PostController extends FOSRestController
 
         return JsonResponse::create(["post" => $post], Response::HTTP_OK);
     }
+
+    public function listByWriterAction(Request $request): Response
+    {
+        $writerId = $request->get('writerId');
+        $posts = $this->postFinder->findByWriterId($writerId);
+
+        return JsonResponse::create(["posts" => $posts], Response::HTTP_OK);
+    }
 }

@@ -35,8 +35,34 @@ class PostControllerTest extends ApiTestCase
 
         $this->client->request('GET', '/posts/' . $postId);
 
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testGetPostsListbyWriterId()
+    {
+        $writerId = Uuid::uuid4()->toString();
+
+        $this->client->request('POST', '/posts',
+            [
+                'writer_id' => $writerId,
+                'text' => 'text' . random_int(1, 99999),
+                'description' => 'description' . random_int(1, 99999),
+            ]
+        );
+
+        $this->client->request('POST', '/posts',
+            [
+                'writer_id' => $writerId,
+                'text' => 'text' . random_int(1, 99999),
+                'description' => 'description' . random_int(1, 99999),
+            ]
+        );
+
+        $this->client->request('GET', '/posts/writer/' . $writerId);
+
         $content = json_decode($this->client->getResponse()->getContent(), true);
 
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertCount(2, $content['posts']);
     }
 }

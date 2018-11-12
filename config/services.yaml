@@ -123,3 +123,9 @@ services:
     App\Prooph\Projection\Post\PostReadModel:
         arguments: ['@doctrine.dbal.default_connection']
 
+    App\Prooph\Model\Post\Handler\GetPostsByWriterIdHandler:
+        arguments: ['@post_list']
+        public: true
+        tags:
+            - { name: 'prooph_service_bus.todo_command_bus.route_target', message_detection: true }
+

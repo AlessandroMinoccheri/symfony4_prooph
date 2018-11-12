@@ -4,12 +4,16 @@
 
 command::post-todo:
     path: /todos
-    defaults: { _controller: App\Controller\TodoController:postCreateTodoAction, prooph_command_name: 'App\Prooph\Model\Todo\Command\PostTodo' }
+    defaults: { _controller: App\Controller\TodoController::postCreateTodoAction, prooph_command_name: 'App\Prooph\Model\Todo\Command\PostTodo' }
 
 command::post-post:
     path: /posts
-    defaults: { _controller: App\Controller\PostController:postCreatePostAction, prooph_command_name: 'App\Prooph\Model\Post\Command\PostPost' }
+    defaults: { _controller: App\Controller\PostController::postCreatePostAction, prooph_command_name: 'App\Prooph\Model\Post\Command\PostPost' }
 
-page::user-todo-list:
+page::user-post-list:
     path:     /posts/{postId}
-    defaults: { _controller: App\Controller\PostController:listAction }
+    defaults: { _controller: App\Controller\PostController::listAction }
+
+page::user-post-list-by-writer:
+    path:     /posts/writer/{writerId}
+    defaults: { _controller: App\Controller\PostController::listByWriterAction }

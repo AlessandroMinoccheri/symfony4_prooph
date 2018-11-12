@@ -48,4 +48,12 @@ class PostFinder
 
         return $result;
     }
+
+    public function findByWriterId(string $writerId): array
+    {
+        return $this->connection->fetchAll(
+            sprintf('SELECT * FROM %s WHERE writer_id = :writer_id', Table::POST),
+            ['writer_id' => $writerId]
+        );
+    }
 }
