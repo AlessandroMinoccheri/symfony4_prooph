@@ -22,39 +22,26 @@ use App\Prooph\Model\Todo\TodoStatus;
 use App\Prooph\Model\Todo\TodoText;
 use App\Prooph\Model\User\UserId;
 
-final class PostWasPosted extends AggregateChanged
+final class PostWasChangedStatus extends AggregateChanged
 {
     /**
      * @var TodoId
      */
     private $postId;
 
-    private $text;
-
-    private $description;
-
-    private $writerId;
-
     private $status;
 
-    public static function create(
-        PostText $text,
-        PostDescription $description,
-        PostId $postId,
-        UserId $writerId
-    ): PostWasPosted {
+    public static function change(
+        PostStatus $status,
+        PostId $postId
+    ): PostWasChangedStatus {
         /** @var self $event */
         $event = self::occur($postId->toString(), [
-            'text' => $text->toString(),
-            'description' => $description->toString(),
-            'writer_id' => $writerId->toString()
+            'status' => $status->toString()
         ]);
 
         $event->postId = $postId;
-        $event->text = $text;
-        $event->description = $description;
-        $event->writerId = $writerId;
-        $event->status = PostStatus::DRAFT;
+        $event->status = $status->toString();
 
         return $event;
     }
@@ -68,27 +55,8 @@ final class PostWasPosted extends AggregateChanged
         return $this->postId;
     }
 
-    public function text(): PostText
+    public function status(): PostStatus
     {
-        return PostText::fromString($this->payload['text']);
-    }
-
-    public function description(): PostDescription
-    {
-        return PostDescription::fromString($this->payload['description']);
-    }
-
-    public function writerId(): UserId
-    {
-        if (null === $this->writerId) {
-            $this->writerId = UserId::fromString($this->payload['writer_id']);
-        }
-
-        return $this->writerId;
-    }
-
-    public function status() :PostStatus
-    {
-        return PostStatus::byName($this->status);
+        return PostStatus::byName($this->payload['status']);
     }
 }

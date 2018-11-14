@@ -54,18 +54,6 @@ class PostController extends FOSRestController
     {
         $commandName = $request->attributes->get(self::NAME_ATTRIBUTE);
 
-        if (null === $commandName) {
-            return JsonResponse::create(
-                [
-                    'message' => sprintf(
-                        'Command name attribute ("%s") was not found in request.',
-                        self::NAME_ATTRIBUTE
-                    )
-                ],
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
-        }
-
         $payload = $request->request->all();
 
         $postId = Uuid::uuid4()->toString();
@@ -107,5 +95,29 @@ class PostController extends FOSRestController
         $posts = $this->postFinder->findByWriterId($writerId);
 
         return JsonResponse::create(["posts" => $posts], Response::HTTP_OK);
+    }
+
+    public function changeStatusAction(Request $request): Response
+    {
+        $commandName = $request->attributes->get(self::NAME_ATTRIBUTE);
+
+        $payload = $request->request->all();
+
+        $command = $this->messageFactory->createMessageFromArray($commandName, ['payload' => $payload]);
+
+        try {
+            $this->commandBus->dispatch($command);
+        } catch (CommandDispatchException $ex) {
+            $this->logger->error($ex->getPrevious());
+            return JsonResponse::create(
+                ['message' => $ex->getPrevious()->getMessage()],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        } catch (\Throwable $error) {
+            $this->logger->error($error);
+            return JsonResponse::create(['message' => $error->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return JsonResponse::create(["post" => $payload['post_id']], Response::HTTP_OK);
     }
 }

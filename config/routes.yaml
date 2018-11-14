@@ -10,6 +10,10 @@ command::post-post:
     path: /posts
     defaults: { _controller: App\Controller\PostController::postCreatePostAction, prooph_command_name: 'App\Prooph\Model\Post\Command\PostPost' }
 
+command::change-status-post:
+    path: /posts/{postId}/status
+    defaults: { _controller: App\Controller\PostController::changeStatusAction, prooph_command_name: 'App\Prooph\Model\Post\Command\ChangePostStatus' }
+
 page::user-post-list:
     path:     /posts/{postId}
     defaults: { _controller: App\Controller\PostController::listAction }
