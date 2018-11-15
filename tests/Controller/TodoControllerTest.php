@@ -16,8 +16,6 @@ class TodoControllerTest extends ApiTestCase
             ]
         );
 
-        $content = json_decode($this->client->getResponse()->getContent(), true);
-
         $this->assertEquals(201, $this->client->getResponse()->getStatusCode());
     }
 }
